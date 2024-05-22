@@ -10,10 +10,12 @@ class CartAction extends ConsumerWidget {
     super.key,
     this.cartKey,
     this.onPressed,
+    this.color,
   });
 
   final GlobalKey<CartIconKey>? cartKey;
   final VoidCallback? onPressed;
+  final bool? color;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -30,11 +32,11 @@ class CartAction extends ConsumerWidget {
               if (cartKey != null) {
                 return AddToCartIcon(
                   key: cartKey!,
-                  icon: const Icon(Iconsax.shopping_cart5),
+                  icon: Icon(Iconsax.shopping_cart5,color: color == true ? Colors.black : Colors.white),
                   badgeOptions: const BadgeOptions(active: false),
                 );
               }
-              return const Icon(Iconsax.shopping_cart5);
+              return  Icon(Iconsax.shopping_cart5,color: color == true ? Colors.black : Colors.white);
             }),
           ),
           tooltip: 'Cart',

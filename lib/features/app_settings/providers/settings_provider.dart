@@ -73,7 +73,7 @@ class AppSettingsprovider extends ChangeNotifier {
 
     _loadLocalesFromCache(defaultLanguage ?? appConfig.defaultLanguage);
 
-    await Future.delayed(const Duration(seconds: 1), () => _locales.clear());
+    // await Future.delayed(const Duration(seconds: 5), () => _locales.clear());
 
     await _loadLocalesFromNetwork(defaultLanguage ?? appConfig.defaultLanguage);
   }
@@ -113,6 +113,9 @@ class AppSettingsprovider extends ChangeNotifier {
     );
 
     _locales.add(locale);
+    if(_locales.length > 2){
+      _locales.removeAt(2);
+    }
 
     if (_selectedLocale == null) {
       _selectedLocale = _locales.firstWhereOrNull(

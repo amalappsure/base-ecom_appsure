@@ -8,7 +8,9 @@ import 'package:base_ecom_appsure/features/app_settings/providers/settings_provi
 import 'package:iconsax/iconsax.dart';
 
 class ChooseLanguageAction extends ConsumerWidget {
-  const ChooseLanguageAction({super.key});
+  const ChooseLanguageAction({super.key, this.color});
+
+  final bool? color;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -33,13 +35,13 @@ class ChooseLanguageAction extends ConsumerWidget {
           Text(
             settings.selectedLocale!.locale.languageCode.toUpperCase(),
             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: Colors.white,
+              color: color == true ?Colors.black:Colors.white,
             ),
           ),
           const Gap(3),
-          const Icon(
+          Icon(
             Iconsax.arrow_down_14,
-            color: Colors.white,
+            color: color == true ?Colors.black:Colors.white,
           ),
         ],
       ),

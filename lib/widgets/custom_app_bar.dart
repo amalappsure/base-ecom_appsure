@@ -21,6 +21,7 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
     this.showSearch = true,
     this.cartKey,
     this.showCart = true,
+    this.backgroundColor = false,
   });
 
   final String? title;
@@ -30,6 +31,7 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
   final bool showCart;
   final GlobalKey<CartIconKey>? cartKey;
   final bool showSearch;
+  final bool backgroundColor;
 
   void onLeadingClicked(BuildContext context, WidgetRef ref) =>
       throw UnimplementedError();
@@ -42,29 +44,37 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isRtl = Directionality.of(context) == TextDirection.rtl;
     return AppBar(
-      leadingWidth: MediaQuery.of(context).size.width * 0.3,
+      elevation: 1,
+      backgroundColor: backgroundColor == true ? Colors.white : AppBar().backgroundColor,
+      leadingWidth: leading != null ? MediaQuery.of(context).size.width * 0.45 : MediaQuery.of(context).size.width * 0.13,
       leading: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () => onLeadingClicked(context, ref),
         child: leading ??
             Icon(
-              isRtl ? Iconsax.arrow_right_1 : Iconsax.arrow_left,
+              isRtl ? Iconsax.arrow_right_1 : Iconsax.arrow_left,color: backgroundColor == true ? Colors.black : Colors.white,
             ),
       ),
       title: title != null ? Text(title!) : null,
       titleSpacing: 0.0,
+      titleTextStyle: TextStyle(fontSize: MediaQuery.of(context).size.width * 0.045,fontWeight: FontWeight.w500,color: backgroundColor == true ? Colors.black : Colors.white),
       actions: showActions
           ? [
         if (showSearch)
           SearchAction(
             onPressed: () => onSearchClicked(context, ref),
+            color: backgroundColor,
           ),
-        const ChooseLanguageAction(),
+        SizedBox(width:5),
+        ChooseLanguageAction(color: backgroundColor,),
+        SizedBox(width:5),
         if (showCart)
           CartAction(
             cartKey: cartKey,
             onPressed: () => onCartClicked(context, ref),
+            color: backgroundColor,
           ),
+        SizedBox(width:5),
       ]
           : [],
     );

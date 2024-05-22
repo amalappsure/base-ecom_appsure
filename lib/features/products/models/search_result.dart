@@ -60,6 +60,7 @@ class SearchResult {
   final String? urlName;
   final int? unitId;
   final String? type;
+  final String? imagePathUrl;
 
   const SearchResult({
     required this.id,
@@ -67,11 +68,12 @@ class SearchResult {
     this.urlName,
     this.unitId,
     this.type,
+    this.imagePathUrl,
   });
 
   @override
   String toString() {
-    return 'Result(id: $id, description: $description, urlName: $urlName, unitId: $unitId, type: $type)';
+    return 'Result(id: $id, description: $description, urlName: $urlName, unitId: $unitId, type: $type, imagePathUrl: $imagePathUrl)';
   }
 
   factory SearchResult.fromJson(Map<String, dynamic> json) => SearchResult(
@@ -80,6 +82,7 @@ class SearchResult {
     urlName: json['urlName'] as String?,
     unitId: json['unitID'] as int?,
     type: json['type'] as String?,
+    imagePathUrl: json['imagePathUrl'] as String?,
   );
 
   Map<String, dynamic> toJson() => {
@@ -88,6 +91,7 @@ class SearchResult {
     'urlName': urlName,
     'unitID': unitId,
     'type': type,
+    'imagePathUrl': imagePathUrl,
   };
 
   @override
@@ -104,5 +108,6 @@ class SearchResult {
       description.hashCode ^
       urlName.hashCode ^
       unitId.hashCode ^
-      type.hashCode;
+      type.hashCode^
+      imagePathUrl.hashCode;
 }

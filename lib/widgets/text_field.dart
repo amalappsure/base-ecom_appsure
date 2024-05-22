@@ -185,11 +185,11 @@ class _CustomTextField extends CustomTextFieldBase {
 
   @override
   EdgeInsetsGeometry _contentPadding(BuildContext context) =>
-      const EdgeInsets.all(12);
+      const EdgeInsets.all(8);
 
   @override
   InputBorder border(BuildContext context) => OutlineInputBorder(
-    borderRadius: BorderRadius.circular(8),
+    borderRadius: BorderRadius.circular(15),
     borderSide: BorderSide(
       color: borderColor ?? const Color(0xFF898D90),
     ),
@@ -200,7 +200,7 @@ class _CustomTextField extends CustomTextFieldBase {
 
   @override
   InputBorder disabledBorder(BuildContext context) => OutlineInputBorder(
-    borderRadius: BorderRadius.circular(8),
+    borderRadius: BorderRadius.circular(15),
     borderSide: const BorderSide(
       color: Color.fromARGB(255, 191, 192, 194),
     ),
@@ -208,7 +208,7 @@ class _CustomTextField extends CustomTextFieldBase {
 
   @override
   InputBorder enabledBorder(BuildContext context) => OutlineInputBorder(
-    borderRadius: BorderRadius.circular(8),
+    borderRadius: BorderRadius.circular(15),
     borderSide: BorderSide(
       color: borderColor ?? const Color(0xFF898D90),
     ),
@@ -216,7 +216,7 @@ class _CustomTextField extends CustomTextFieldBase {
 
   @override
   InputBorder errorBorder(BuildContext context) => OutlineInputBorder(
-    borderRadius: BorderRadius.circular(8),
+    borderRadius: BorderRadius.circular(15),
     borderSide: const BorderSide(
       color: Color(0xFFdC3545),
     ),
