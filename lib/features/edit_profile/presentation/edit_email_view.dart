@@ -22,6 +22,7 @@ class _EditEmailViewState extends ConsumerState<EditEmailView> {
   late List<TextEditingController> _editingControllers;
 
   bool submitting = false;
+  String passwordIncorrectMsg = '';
 
   @override
   void initState() {
@@ -40,6 +41,7 @@ class _EditEmailViewState extends ConsumerState<EditEmailView> {
   @override
   Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
+    passwordIncorrectMsg = settings.selectedLocale!.translate('PasswordNotMatch',);
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0).copyWith(
         bottom: 16 + MediaQuery.of(context).viewInsets.bottom,
@@ -166,13 +168,21 @@ class _EditEmailViewState extends ConsumerState<EditEmailView> {
     });
 
     try {
-      await ref.read(editProfileProvider).updateEmail(
-        newEmail: _editingControllers[2].text,
-        password: _editingControllers[3].text,
-      );
+      if(_editingControllers[3].text == HiveRepo.instance.user?.password){
+        await ref.read(editProfileProvider).updateEmail(
+          newEmail: _editingControllers[2].text,
+          password: _editingControllers[3].text,
+        );
 
-      // ignore: use_build_context_synchronously
-      Navigator.pop(context);
+        // ignore: use_build_context_synchronously
+        Navigator.pop(context);
+      }else{
+        showSnackBar(
+          context,
+          message: passwordIncorrectMsg,
+        );
+      }
+
     } catch (e) {
       // ignore: use_build_context_synchronously
       showSnackBar(

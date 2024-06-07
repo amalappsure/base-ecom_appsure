@@ -92,7 +92,7 @@ class CheckoutItem extends ConsumerWidget {
                       ),
                       _titleAndValue(
                         context,
-                        settings.selectedLocale!.translate('Sub total'),
+                        settings.selectedLocale!.translate('SubTotal'),
                         settings
                             .priceText(cart.totalPriceOf(item.itemId, item.unitId)),
                         CrossAxisAlignment.end,

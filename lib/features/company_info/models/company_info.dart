@@ -3,7 +3,7 @@ import 'package:flutter/foundation.dart';
 enum InfoType {
   about(2),
   privacy(13),
-  returnAndExchange(10),
+  returnAndExchange(21),
   contact(8);
 
   final int id;

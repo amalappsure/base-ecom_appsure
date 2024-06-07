@@ -13,6 +13,8 @@ import 'package:base_ecom_appsure/themes/padding.dart';
 import 'package:base_ecom_appsure/widgets/phone_field.dart';
 import 'package:base_ecom_appsure/widgets/text_field_with_title.dart';
 
+import '../../../widgets/choose_language_action.dart';
+
 class RegistrationView extends ConsumerStatefulWidget {
   const RegistrationView({super.key});
 
@@ -112,12 +114,21 @@ class _RegistrationViewState extends ConsumerState<RegistrationView> {
             const Gap(8),
             TextFieldWithTitleBase.widget(
               controller: _editingControllers[2],
+              isRequired: true,
               label: settings.selectedLocale!.translate('Email'),
-              validator: (value) => Rule(
-                value,
-                name: settings.selectedLocale!.translate('Email'),
-                isEmail: true,
-              ).error,
+              validator: (value) {
+                if ((value ?? '').isEmpty) {
+                  return settings.selectedLocale!.translate(
+                    'EnterYourEmailAddress',
+                  );
+                }
+                if (!isValidEmail(value!)){
+                  return settings.selectedLocale!.translate(
+                    'InvalidMail',
+                  );
+                }
+                return null;
+              },
               keyboardType: TextInputType.emailAddress,
               textInputAction: TextInputAction.next,
             ),
@@ -167,6 +178,26 @@ class _RegistrationViewState extends ConsumerState<RegistrationView> {
                 'PasswordMustHave6Char',
               ),
             ),
+            const Gap(18),
+            Text(settings.selectedLocale!.translate('PreferredLanguage',)),
+            const Gap(9),
+            Container(
+              height: MediaQuery.of(context).size.height * 0.055,
+              decoration: BoxDecoration(
+                color: Colors.transparent,
+                border: Border.all(
+                  color: Colors.black,
+                  width: 1.0,
+                ),
+                borderRadius: BorderRadius.all(
+                  Radius.circular(15.0),
+                ),
+              ),
+              child: Padding(
+                padding: EdgeInsets.only(left: 10),
+                child: ChooseLanguageAction(color: true,),
+              )
+            ),
             const Gap(24),
             if (registering)
               SizedBox.square(
@@ -193,7 +224,10 @@ class _RegistrationViewState extends ConsumerState<RegistrationView> {
                   const Gap(6),
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: () => _formKey.currentState!.reset(),
+                      onPressed: () {
+                        _formKey.currentState!.reset();
+                        _editingControllers[0].clear();
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.black,
                       ),
@@ -215,6 +249,13 @@ class _RegistrationViewState extends ConsumerState<RegistrationView> {
         ),
       ),
     );
+  }
+
+  bool isValidEmail(String value) {
+    final RegExp emailRegex = RegExp(
+        r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+    );
+    return emailRegex.hasMatch(value);
   }
 
   Future<void> _submit(AppSettingsprovider settings) async {
@@ -322,6 +363,7 @@ class _RegistrationViewState extends ConsumerState<RegistrationView> {
       await _authProvider.userLogin(
         username: mobile,
         password: password,
+        rememberMe: true
       );
 
       // ignore: use_build_context_synchronously

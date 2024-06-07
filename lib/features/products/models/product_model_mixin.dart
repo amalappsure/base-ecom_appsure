@@ -9,7 +9,7 @@ mixin ProductModelMixin {
   int get qtyPerCustomer;
   Product get product;
 
-  double? get currentPrice => promotionPrice ?? sellingPrice;
+  double? get currentPrice => sellingPrice;
 
   int? get discountPercentage {
     if ((sellingPrice ?? 0) <= 0) {

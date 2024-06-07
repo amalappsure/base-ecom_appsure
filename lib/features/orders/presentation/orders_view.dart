@@ -9,6 +9,7 @@ import 'package:base_ecom_appsure/features/orders/providers/orders_provider.dart
 import 'package:base_ecom_appsure/foundation/show_snack_bar.dart';
 import 'package:base_ecom_appsure/models/app_exception.dart';
 import 'package:base_ecom_appsure/widgets/custom_app_bar.dart';
+import 'package:gap/gap.dart';
 
 class OrdersView extends ConsumerStatefulWidget {
   const OrdersView({
@@ -56,7 +57,7 @@ class _OrdersViewState extends ConsumerState<OrdersView> {
                 onRefresh: () => ref.read(ordersProvider).getOrders(
                   refresh: true,
                 ),
-                child: ListView.builder(
+                child: (orders.isEmpty)?ListView.builder(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   itemCount: orders.length,
                   itemBuilder: (context, index) {
@@ -74,6 +75,25 @@ class _OrdersViewState extends ConsumerState<OrdersView> {
                       items: items,
                     );
                   },
+                ):Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Assets.images.cartEmpty.image(
+                      //   height: MediaQuery.of(context).size.height * 0.2,
+                      // ),
+                      // const Gap(16.0),
+                      Text(
+                        settings.selectedLocale!.translate(
+                          'ThereisNoOrders',
+                        ),
+                        textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.titleLarge,
+                      ),
+                    ],
+                  ),
                 ),
               );
             },

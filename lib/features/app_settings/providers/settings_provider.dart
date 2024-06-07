@@ -10,6 +10,8 @@ import 'package:base_ecom_appsure/foundation/hive_repo.dart';
 import 'package:base_ecom_appsure/models/misc_values.dart';
 import 'package:base_ecom_appsure/rest/rest_client_provider.dart';
 
+import '../../auth/providers/login_state_provider.dart';
+import '../../cart/providers/cart_provider.dart';
 import '../models/custom_locale.dart';
 
 final _languages = [
@@ -69,6 +71,11 @@ class AppSettingsprovider extends ChangeNotifier {
 
   Future<dynamic> getEcomAllSettings() async {
     HiveRepo.instance.defaultLanguage ??= _languages.first.name;
+    if(HiveRepo.instance.user != null && HiveRepo.instance.user!.isRememberMe == false){
+      _ref.read(cartProvider).clearLocalCart();
+      await HiveRepo.instance.logout();
+      _ref.read(loginStateProvider.notifier).state = const LoggedOut();
+    }
     final defaultLanguage = HiveRepo.instance.defaultLanguage;
 
     _loadLocalesFromCache(defaultLanguage ?? appConfig.defaultLanguage);

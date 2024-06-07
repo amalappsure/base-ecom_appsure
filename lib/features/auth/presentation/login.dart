@@ -36,6 +36,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
   final _formKey = GlobalKey<FormState>();
   late List<TextEditingController> _editingControllers;
 
+  bool _rememberMe = false;
   bool submitting = false;
 
   @override
@@ -64,6 +65,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
           TextFieldWithTitleBase.widget(
             controller: _editingControllers[0],
             label: settings.selectedLocale!.translate('Username'),
+            bottomHint: settings.selectedLocale!.translate('EnterEmailMobileNumber'),
             validator: (value) => Rule(
               value,
               name: settings.selectedLocale!.translate('Username'),
@@ -97,7 +99,26 @@ class _LoginViewState extends ConsumerState<LoginView> {
             textInputAction: TextInputAction.done,
             obscureText: true,
           ),
-          const Gap(24),
+          const Gap(12),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Checkbox(
+                value: _rememberMe,
+                onChanged: (bool? value) {
+                  setState(() {
+                    _rememberMe = value ?? false;
+                  });
+                },
+                activeColor: Theme.of(context).primaryColor,
+              ),
+              Text(
+                settings.selectedLocale!.translate('RememberMe'),
+                style: TextStyle(fontSize: 15.0),
+              ),
+            ],
+          ),
+          const Gap(18),
           if (submitting)
             const SizedBox.square(
               dimension: 48.0,
@@ -186,6 +207,7 @@ class _LoginViewState extends ConsumerState<LoginView> {
       await ref.read(authProvider).userLogin(
         username: _editingControllers[0].text,
         password: _editingControllers[1].text,
+        rememberMe: _rememberMe,
       );
 
       // ignore: use_build_context_synchronously

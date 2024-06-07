@@ -136,6 +136,9 @@ abstract class RestClient {
   @POST('/MakePaymentGateway')
   Future<dynamic> makePaymentGateway(@Body() Map<String, dynamic> body);
 
+  @POST('/ValidateMobile')
+  Future<dynamic> ValidateMobile(@Body() Map<String, dynamic> body);
+
   @POST('/PutEmail')
   Future<dynamic> putEmail(@Body() Map<String, dynamic> body);
 

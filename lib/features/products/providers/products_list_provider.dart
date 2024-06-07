@@ -207,7 +207,7 @@ class CategoryProductsProvider extends ChangeNotifier {
           "PriceMin": _selectedPricePairs?.firstOrNull ?? 0,
           "PriceMax": _selectedPricePairs?.lastOrNull ?? 0,
           "MenuText": '',
-          if (category != null) "CategoryIds": _category!.id.toString(),
+          // if (category != null) "CategoryIds": _category!.id.toString(),
           ...map,
         },
       });

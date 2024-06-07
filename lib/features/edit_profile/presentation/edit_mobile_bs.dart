@@ -11,6 +11,9 @@ import 'package:base_ecom_appsure/foundation/show_snack_bar.dart';
 import 'package:base_ecom_appsure/models/app_exception.dart';
 import 'package:base_ecom_appsure/widgets/text_field_with_title.dart';
 
+import '../../auth/providers/auth_provider.dart';
+import 'otp_varify_editPhone.dart';
+
 class EditMobileBS extends ConsumerStatefulWidget {
   const EditMobileBS({super.key});
 
@@ -22,7 +25,9 @@ class _EditMobileBSState extends ConsumerState<EditMobileBS> {
   final _formKey = GlobalKey<FormState>();
   late List<TextEditingController> _editingControllers;
 
+  String alreadyExistContent = '';
   bool submitting = false;
+  bool userExist = true;
 
   @override
   void initState() {
@@ -39,6 +44,7 @@ class _EditMobileBSState extends ConsumerState<EditMobileBS> {
   @override
   Widget build(BuildContext context) {
     final settings = ref.read(settingsProvider);
+    alreadyExistContent = settings.selectedLocale!.translate('AlreadyExists',);
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0).copyWith(
         bottom: 16 + MediaQuery.of(context).viewInsets.bottom,
@@ -130,7 +136,9 @@ class _EditMobileBSState extends ConsumerState<EditMobileBS> {
               )
             else
               ElevatedButton(
-                onPressed: _submit,
+                onPressed: (){
+                  _submit(context,_editingControllers[0].text, _editingControllers[1].text);
+                },
                 child: Text(
                   settings.selectedLocale!.translate(
                     'Submit',
@@ -143,7 +151,24 @@ class _EditMobileBSState extends ConsumerState<EditMobileBS> {
     );
   }
 
-  Future<void> _submit() async {
+  Future<T?> _showModalBottomSheet<T>(
+      BuildContext context,
+      Widget widget,
+      ) {
+    return showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(12),
+          topRight: Radius.circular(12),
+        ),
+      ),
+      isScrollControlled: true,
+      builder: (context) => widget,
+    );
+  }
+
+  Future<void> _submit(BuildContext context, String mobilePrimary,  String mobileNew) async {
     if (!_formKey.currentState!.validate()) return;
     FocusScope.of(context).unfocus();
     setState(() {
@@ -151,9 +176,32 @@ class _EditMobileBSState extends ConsumerState<EditMobileBS> {
     });
 
     try {
-      await ref.read(editProfileProvider).updateMobile(
+      userExist = await ref.read(editProfileProvider).userMobileExists(
         _editingControllers[1].text,
       );
+      if(userExist){
+        setState(() {
+          submitting = false;
+        });
+        Navigator.pop(context);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(alreadyExistContent)
+          )
+        );
+      }else{
+        final otpRef = await ref.read(authProvider).generateOTP(
+          mobile: mobilePrimary,
+          otpType: OTPType.forgotPassword,
+        );
+        if(otpRef is String){
+          Navigator.pop(context);
+          _showModalBottomSheet(
+            context,
+            OTPVerifyPhoneView(otpKey: otpRef,mobilePrimary: mobilePrimary, mobileNew: mobileNew,),
+          );
+        }
+      }
     } catch (e) {
       // ignore: use_build_context_synchronously
       showSnackBar(
@@ -163,7 +211,6 @@ class _EditMobileBSState extends ConsumerState<EditMobileBS> {
       );
     }
     // ignore: use_build_context_synchronously
-    Navigator.pop(context);
     setState(() {
       submitting = false;
     });

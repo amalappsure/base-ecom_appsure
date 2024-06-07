@@ -16,7 +16,7 @@ class SortMethodSelectorBS extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final methods = ref.watch(sortMethodsProvider(family));
+    final methods = ref.read(sortMethodsProvider(family));
     final settings = ref.watch(settingsProvider);
     return SingleChildScrollView(
       child: Column(

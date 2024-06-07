@@ -20,13 +20,19 @@ class SortMethodChooser extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final provider = ref.read(productListProvider(family));
     final settings = ref.watch(settingsProvider);
+    final provider = ref.watch(productListProvider(family));
+    final sortData = provider.sortBy;
+    String label;
+    if (sortData?.value == null || sortData!.value.isEmpty) {
+      label = settings.selectedLocale!.translate('Sortby');
+    } else {
+      label = sortData.value;
+    }
 
     return ChooserContainer(
       onTap: () => showBS(context, provider),
-      label: provider.sortBy?.value ??
-          settings.selectedLocale!.translate('Sortby'),
+      label: label,
       active: provider.sortBy != null,
     );
   }
@@ -67,7 +73,7 @@ class CategoryChooser extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final provider = ref.watch(productListProvider(family));
+    final provider = ref.read(productListProvider(family));
     final settings = ref.watch(settingsProvider);
     String label;
     if (provider.category?.title == null || provider.category!.title.isEmpty) {

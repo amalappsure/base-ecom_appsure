@@ -21,6 +21,7 @@ class PhoneFieldWithTitle extends StatelessWidget {
     required this.label,
     this.isRequired = false,
     this.focusNode,
+    this.isObscure,
   });
 
   final TextEditingController editingController;
@@ -32,6 +33,7 @@ class PhoneFieldWithTitle extends StatelessWidget {
   final String label;
   final bool isRequired;
   final FocusNode? focusNode;
+  final bool? isObscure;
 
   @override
   Widget build(BuildContext context) {
@@ -66,6 +68,7 @@ class PhoneFieldWithTitle extends StatelessWidget {
           onNumberChanged: onNumberChanged,
           key: key,
           focusNode: focusNode,
+          obscure: isObscure,
         ),
       ],
     );
@@ -82,6 +85,7 @@ class PhoneField extends ConsumerStatefulWidget {
     this.hint,
     this.onNumberChanged,
     this.focusNode,
+    this.obscure,
   });
 
   final TextEditingController editingController;
@@ -91,6 +95,7 @@ class PhoneField extends ConsumerStatefulWidget {
   final FormFieldValidator<String>? validator;
   final ValueChanged<String>? onNumberChanged;
   final FocusNode? focusNode;
+  final bool? obscure;
 
   @override
   ConsumerState<PhoneField> createState() => _PhoneFieldState();
@@ -98,9 +103,11 @@ class PhoneField extends ConsumerStatefulWidget {
 
 class _PhoneFieldState extends ConsumerState<PhoneField> {
   String value = '';
+  bool? obscure;
   late CountryCode countryCode;
   @override
   void initState() {
+    obscure = widget.obscure;
     countryCode = widget.initialValue;
     value = widget.editingController.text;
     super.initState();
@@ -149,6 +156,7 @@ class _PhoneFieldState extends ConsumerState<PhoneField> {
               this.value = value;
             },
             maxLength: 8,
+            obscureText: obscure??false,
             counter: const SizedBox.shrink(),
             inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             keyboardType: TextInputType.phone,

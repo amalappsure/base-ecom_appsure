@@ -33,6 +33,8 @@ class TrackOrderView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    print('vId $vId');
+    print('items ${items[0].itemName}');
     final settings = ref.watch(settingsProvider);
 
     return Scaffold(
@@ -66,6 +68,7 @@ class TrackOrderView extends ConsumerWidget {
                       address: snapshot.data!.deliveryAddress!,
                       showIsDefault: false,
                       showActions: false,
+                      showTopEdit: false,
                     ),
                     const Gap(12),
                     OrderTimeline(

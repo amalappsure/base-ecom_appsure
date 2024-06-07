@@ -1,13 +1,34 @@
-part of 'reset_password_view.dart';
 
-class VerifyPhoneView extends ConsumerStatefulWidget {
-  const VerifyPhoneView({super.key});
+
+import 'dart:async';
+import 'dart:convert';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gap/gap.dart';
+import 'package:rules/rules.dart';
+
+import '../../../widgets/text_field_with_title.dart';
+import '../../app_settings/providers/settings_provider.dart';
+import '../../auth/models/OTP_Response.dart';
+import '../../auth/providers/auth_provider.dart';
+import '../../auth/providers/reset_password_provider/reset_password_provider.dart';
+import '../providers/edit_profile_provider.dart';
+
+
+class OTPVerifyPhoneView extends ConsumerStatefulWidget {
+  final String otpKey;
+  final String mobilePrimary;
+  final String mobileNew;
+
+  const OTPVerifyPhoneView({super.key,required this.otpKey, required this.mobilePrimary,  required this.mobileNew});
 
   @override
-  ConsumerState<VerifyPhoneView> createState() => _VerifyPhoneBSState();
+  ConsumerState<OTPVerifyPhoneView> createState() => _OTPVerifyPhoneBSState();
 }
 
-class _VerifyPhoneBSState extends ConsumerState<VerifyPhoneView> {
+class _OTPVerifyPhoneBSState extends ConsumerState<OTPVerifyPhoneView> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _editingController;
 
@@ -16,6 +37,9 @@ class _VerifyPhoneBSState extends ConsumerState<VerifyPhoneView> {
   static const maxSeconds = 3 * 60;
   int remainingSeconds = maxSeconds;
   Timer? timer;
+  bool? response;
+  bool submitting = false;
+  String otpMessage = '';
 
   @override
   void initState() {
@@ -51,10 +75,11 @@ class _VerifyPhoneBSState extends ConsumerState<VerifyPhoneView> {
     return '${minutes.toString().padLeft(2, '0')}:${remainingSeconds.toString().padLeft(2, '0')}';
   }
 
+
   @override
   Widget build(BuildContext context) {
     final settings = ref.watch(settingsProvider);
-    final submitting = ref.watch(resetPasswordProvider) is VerifyingOTP;
+    otpMessage = settings.selectedLocale!.translate('InvalidOTP');
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16.0),
       child: Form(
@@ -119,10 +144,27 @@ class _VerifyPhoneBSState extends ConsumerState<VerifyPhoneView> {
   }
 
   Future<void> _submit() async {
-    if (!_formKey.currentState!.validate()) return;
 
-    ref.read(resetPasswordProvider.notifier).verifyOTP(
-      _editingController.text,
-    );
+    setState(() {
+      submitting = true;
+    });
+    if (!_formKey.currentState!.validate()) return;
+    response  = await ref.read(authProvider).validateOTPForChangeMobile(otp: _editingController.text, otpRef: widget.otpKey, mobile: widget.mobilePrimary);
+
+    if(response == true){
+      await ref.read(editProfileProvider).updateMobile(
+            widget.mobileNew,
+          );
+      Navigator.pop(context);
+    }else{
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text(otpMessage)
+          )
+      );
+    }
+    setState(() {
+      submitting = false;
+    });
   }
 }

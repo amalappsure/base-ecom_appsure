@@ -195,7 +195,7 @@ class User {
   final dynamic message;
   final String? sessionId;
   final dynamic smsFor;
-  final bool? isRememberMe;
+  bool? isRememberMe;
   final dynamic externalLogin;
   final dynamic externalLoginId;
   final bool? isSocialMediaLogin;
@@ -208,7 +208,7 @@ class User {
   final String? accessToken;
   final String? refreshToken;
 
-  const User({
+  User({
     this.name,
     this.mobile,
     this.countryCode,

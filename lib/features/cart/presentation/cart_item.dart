@@ -105,18 +105,6 @@ class _CartListItem extends CartListItemBase {
                       overflow: TextOverflow.ellipsis,
                     ),
                     const Gap(8),
-                    SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.037,
-                      width: MediaQuery.of(context).size.width * 0.3,
-                      child: GestureDetector(
-                        onTap: () {},
-                        behavior: HitTestBehavior.opaque,
-                        child: ProductCartButton(
-                          product: product,
-                          dontShowDropdown: true,
-                        ),
-                      ),
-                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -132,6 +120,19 @@ class _CartListItem extends CartListItemBase {
                           crossAxisAlignment: CrossAxisAlignment.end,
                         ),
                       ],
+                    ),
+                    const Gap(8),
+                    SizedBox(
+                      height: MediaQuery.of(context).size.height * 0.037,
+                      width: MediaQuery.of(context).size.width * 0.3,
+                      child: GestureDetector(
+                        onTap: () {},
+                        behavior: HitTestBehavior.opaque,
+                        child: ProductCartButton(
+                          product: product,
+                          dontShowDropdown: true,
+                        ),
+                      ),
                     ),
                     // const Gap(8),
                     // Row(

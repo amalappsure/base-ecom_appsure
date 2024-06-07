@@ -62,8 +62,7 @@ class _CheckoutViewState extends ConsumerState<CheckoutView> {
   bool _giftWrap = false;
 
   double get deliveryCharge {
-    if (appConfig.disableDeliveryChargeOption ||
-        appConfig.showZeroDeliveryCharge) {
+    if (appConfig.showZeroDeliveryCharge) {
       return 0;
     }
     if (enableMultipleDeliveryOption) {

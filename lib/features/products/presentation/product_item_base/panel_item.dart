@@ -180,7 +180,7 @@ class _PanelProduct extends ProductBase {
                     ),
                     const Gap(6),
                     // const Spacer(),
-                    ProductCartButton(
+                    if (!appConfig.sellOutOfStock && product.stock > 0)ProductCartButton(
                       product: product,
                       globalKey: globalKey,
                       runCartingAnim: runCartingAnim,

@@ -177,7 +177,7 @@ class AddressItem extends ConsumerWidget {
                       children: [
                         editButton,
                         const Gap(4),
-                        IconButton(
+                        if(!address.defaultAddress)IconButton(
                           style: IconButton.styleFrom(
                             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                             padding: EdgeInsets.zero,

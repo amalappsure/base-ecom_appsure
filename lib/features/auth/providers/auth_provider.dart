@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:base_ecom_appsure/features/app_settings/providers/app_config_provider.dart';
@@ -7,7 +10,11 @@ import 'package:base_ecom_appsure/foundation/hive_repo.dart';
 import 'package:base_ecom_appsure/foundation/string_exts.dart';
 import 'package:base_ecom_appsure/models/app_exception.dart';
 import 'package:base_ecom_appsure/rest/rest_client_provider.dart';
+import 'package:get_it/get_it.dart';
+import 'package:http/http.dart' as http;
 
+import '../../../app_config/config.dart';
+import '../models/OTP_Response.dart';
 import 'login_state_provider.dart';
 
 enum OTPType {
@@ -22,13 +29,13 @@ enum OTPType {
 
 final authProvider = StateProvider((ref) => AuthProvider(ref));
 
-class AuthProvider {
-  AuthProvider(
-      this._ref,
-      ) : _restClient = _ref.read(restClientProvider);
+class AuthProvider{
+  AuthProvider(this._ref) : _restClient = _ref.read(restClientProvider);
 
   final Ref _ref;
   final RestClient _restClient;
+
+
 
   AppSettingsprovider get _settingsProvider => _ref.read(settingsProvider);
 
@@ -87,8 +94,43 @@ class AuthProvider {
       },
     });
 
+    print('response $response');
     return response['result'] as String;
   }
+
+  Future<bool> validateOTPForChangeMobile({
+    required String otp,
+    required String otpRef,
+    required String mobile,
+  }) async {
+    final config = GetIt.I.get<Config>();
+
+    final map = {
+      "String5": otpRef,
+      "Int1": int.parse(otp),
+      "TypeObject2": {
+        "OtpValue": int.parse(otp),
+        "Language": _language,
+        "Mobile": mobile,
+      },
+    };
+
+    final response = await http.post(
+      Uri.parse("${config.baseUrl}/PutOTPMobile"),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode(map),
+    );
+
+    if (response.statusCode == 200) {
+      final otpResponse = jsonDecode(response.body);
+      return otpResponse['status'];
+    } else {
+      throw Exception('Failed to send OTP');
+    }
+  }
+
 
   Future<void> registerUser({
     required String name,
@@ -219,6 +261,7 @@ class AuthProvider {
   Future<void> userLogin({
     required String username,
     required String password,
+    required bool rememberMe,
   }) async {
     LoginResp response;
     try {
@@ -239,7 +282,10 @@ class AuthProvider {
         refreshToken: response.result?.refreshToken,
       );
 
+      response.result!.isRememberMe = rememberMe;
       HiveRepo.instance.user = response.result;
+      print('rememberMe $rememberMe');
+      print('nnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn ${ HiveRepo.instance.user!.isRememberMe}');
 
       final details = await _restClient.getSecurityDetails({
         "TypeObject2": {
@@ -251,6 +297,8 @@ class AuthProvider {
       HiveRepo.instance.user = HiveRepo.instance.user?.copyWith(
         mobile: details.result?.mobile,
       );
+
+      print('mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm ${ HiveRepo.instance.user!.isRememberMe}');
 
       _ref.read(loginStateProvider.notifier).state = LoggedIn(
         user: HiveRepo.instance.user!,

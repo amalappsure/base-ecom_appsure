@@ -52,6 +52,13 @@ class EditProfileProvider {
 
     _updateLocal();
   }
+  Future<bool> userMobileExists(String mobile) async {
+    final response = await _restClient.ValidateMobile({
+      'Language': _language,
+      'Username': mobile,
+    });
+    return response['result'] as bool? ?? false;
+  }
 
   Future<dynamic> updateMobile(String newMobile) async {
     await _restClient.putMobile({

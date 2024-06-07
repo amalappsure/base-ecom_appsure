@@ -53,8 +53,12 @@ class _Panel extends PanelBase {
       desktop: 8,
     );
 
+    // if (panel.panelProducts.length.isOdd) {
+    //   panel.panelProducts.add(panel.panelProducts.first);
+    // }
+
     if (panel.panelProducts.length.isOdd) {
-      panel.panelProducts.add(panel.panelProducts.first);
+      panel.panelProducts.removeAt(panel.panelProducts.length - 1);
     }
 
     final slices = panel.panelProducts.slices(pageLength).toList();

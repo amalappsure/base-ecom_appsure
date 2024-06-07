@@ -65,6 +65,7 @@ class _GuestLoginBSState extends ConsumerState<GuestLoginBS> {
               hint: settings.selectedLocale!.translate('EnterMobileNumber'),
               editingController: _editingControllers[1],
               onChanged: (value) {},
+              isObscure: true,
               validator: (value) {
                 if (mobile != confirm) {
                   return settings.selectedLocale!.translate(
